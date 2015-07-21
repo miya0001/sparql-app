@@ -8,3 +8,8 @@
     border: 1px solid #dedede;
     cursor: text;
 }
+
+#js-editor
+{
+    display: none;
+}

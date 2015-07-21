@@ -38,10 +38,22 @@ class Sparql_Admin
 			if ( 'sparql-app' === get_post_type() ) {
 				?>
 				<script type="text/javascript">
-				var editor = CodeMirror.fromTextArea( document.getElementById( "codemirror-sparql" ), {
-		          mode: "application/sparql-query",
-		          matchBrackets: true
-		        });
+					CodeMirror.fromTextArea( document.getElementById( "codemirror-sparql" ), {
+						mode: "application/sparql-query",
+						matchBrackets: true
+					});
+					CodeMirror.fromTextArea( document.getElementById( "codemirror-app" ), {
+						matchBrackets: true
+					});
+					(function($){
+						$('#sparql-app-app' ).change( function(){
+							if ('custom' == $('option:selected', this).val() ) {
+								$('#js-editor').show();
+							} else {
+								$('#js-editor').hide();
+							}
+						} );
+					})(jQuery);
 				</script>
 				<?php
 			}
@@ -80,6 +92,14 @@ class Sparql_Admin
 					$this->plugins_url . '/lib/codemirror/mode/sparql/sparql.js',
 					array( 'codemirror' ),
 					filemtime( $this->plugins_root . '/lib/codemirror/mode/sparql/sparql.js' ),
+					false
+				);
+
+				wp_enqueue_script(
+					'codemirror-javascript',
+					$this->plugins_url . '/lib/codemirror/mode/javascript/javascript.js',
+					array( 'codemirror' ),
+					filemtime( $this->plugins_root . '/lib/codemirror/mode/javascript/javascript.js' ),
 					false
 				);
 
@@ -164,21 +184,29 @@ class Sparql_Admin
 		);
 	}
 
-	public function meta_app()
+	public function meta_app( $post )
 	{
-		$this->load_apps();
+		wp_nonce_field( 'sparql-app-app', 'sparql-app-app' );
 
-		echo '<select id="sparql-app-app" name="sparql-app-app">';
-		echo '<option>Please select</option>';
-		foreach ( $this->apps as $app ) {
+		$this->load_apps();
+		?>
+		<p><select id="sparql-app-app" name="sparql-app-app">
+		<option>Please select</option>
+		<?php foreach ( $this->apps as $app ): ?>
+		<?php
 			$app_instance = new $app();
 			$app_name = $app_instance->get_name();
-			echo '<option value="'.esc_attr( $app_name ).'">'.esc_html( $app_name ).'</option>';
-		}
-		echo '</select>';
+			echo '<option value="'.esc_attr( $app ).'">'.esc_html( $app_name ).'</option>';
+		?>
+		<?php endforeach; ?>
+		<option value="custom">Custom App</option>
+		</select></p>
+
+		<div id="js-editor"><textarea id="codemirror-app" name="sparql-app-custom-app" style="width: 100%%; height: 10em;"><?php echo esc_textarea( get_post_meta( $post->ID, '_sparql_app_custom_app', true ) ); ?></textarea></div>
+		<?php
 	}
 
-	public function meta_preview()
+	public function meta_preview( $post )
 	{
 		echo '<div id="sparql-app-preview" style="width: 100%;">';
 		echo '<iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d6550.800124028384!2d135.5239112!3d34.8210326!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sja!2sjp!4v1437512871120" width="100%" height="300" frameborder="0" style="border:0" allowfullscreen></iframe>';
