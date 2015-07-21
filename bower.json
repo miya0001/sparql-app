@@ -1,0 +1,19 @@
+{
+  "directory": "lib/",
+  "name": "sparql-app",
+  "moduleType": [
+    "node"
+  ],
+  "homepage": "https://github.com/miya0001/sparql-app",
+  "license": "GPLv2",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "codemirror": "~5.5.0"
+  }
+}

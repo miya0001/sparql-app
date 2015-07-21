@@ -11,6 +11,11 @@ Domain Path: /languages
 */
 
 require_once dirname( __FILE__ ) . '/lib/sparql-admin.php';
+require_once dirname( __FILE__ ) . '/lib/Sparql_App.php';
 
-$sparql_admin = new Sparql_Admin();
+$sparql_admin = new Sparql_Admin( array(
+	'plugins_root' => dirname( __FILE__ ),
+	'plugins_url' => plugins_url( '', __FILE__ ),
+) );
+
 $sparql_admin->register();
